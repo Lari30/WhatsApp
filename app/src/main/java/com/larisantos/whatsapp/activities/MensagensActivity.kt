@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
-import com.larisantos.whatsapp.adapters.ConversasAdapter
+import com.larisantos.whatsapp.adapters.MensagensAdapter
 import com.larisantos.whatsapp.databinding.ActivityMensagensBinding
 import com.larisantos.whatsapp.model.Conversa
 import com.larisantos.whatsapp.model.Mensagem
@@ -36,7 +36,7 @@ class MensagensActivity : AppCompatActivity() {
 
     private var dadosDestinatario: Usuario? = null
     private var dadosUsuarioRemetente: Usuario? = null
-    private lateinit var conversasAdapter: ConversasAdapter
+    private lateinit var conversasAdapter: MensagensAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +51,8 @@ class MensagensActivity : AppCompatActivity() {
     private fun inicializarRecyclerview() {
 
         with(binding){
-            conversasAdapter = ConversasAdapter()
-            rvMensagens.adapter = ConversasAdapter()
+            conversasAdapter = MensagensAdapter()
+            rvMensagens.adapter = conversasAdapter
             rvMensagens.layoutManager = LinearLayoutManager(applicationContext)
         }
     }
@@ -172,7 +172,7 @@ class MensagensActivity : AppCompatActivity() {
             .collection(Constantes.ULTIMAS_CONVERSAS)
             .document(conversa.idUsuarioDestinatario)
             .set(conversa)
-            .addOnSuccessListener { exibirMensagem("Erro ao salvar conversa") }
+            .addOnFailureListener { exibirMensagem("Erro ao salvar conversa") }
 
     }
 
@@ -228,24 +228,21 @@ class MensagensActivity : AppCompatActivity() {
         //Recuperando dados destinatário
         val extras = intent.extras
         if (extras != null){
-            val origem = extras.getString("origem")
-            if (origem == Constantes.ORIGEM_CONTATO){
 
-                dadosDestinatario = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    extras.getParcelable(
-                        "dadosDestinatario",
-                        Usuario::class.java
-                    )
-                }else{
-                    extras.getParcelable(
-                        "dadosDestinatario"
-                    )
-                }
+            dadosDestinatario = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                extras.getParcelable(
+                    "dadosDestinatario",
+                    Usuario::class.java
+                )
+            }else{
+                extras.getParcelable(
+                    "dadosDestinatario"
+                )
+                 }
 
-            }else if (origem == Constantes.ORIGEM_CONVERSA){
-                //Recuperar os dados da conversa
+
+
 
             }
         }
     }
-}

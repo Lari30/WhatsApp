@@ -49,7 +49,7 @@ class ContatosFragment : Fragment() {
         contatosAdapter = ContatosAdapter{ usuario ->
             val intent = Intent(context, MensagensActivity::class.java)
             intent.putExtra("dadosDestinatario", usuario)
-            intent.putExtra("origem", Constantes.ORIGEM_CONTATO)
+            //intent.putExtra("origem", Constantes.ORIGEM_CONTATO)
             startActivity(intent)
         }
         binding.rvContatos.adapter = contatosAdapter
@@ -73,7 +73,7 @@ class ContatosFragment : Fragment() {
 
     private fun adicionarListenerContatos() {
         eventoSnapshot = firestore
-            .collection("usuarios")
+            .collection(Constantes.USUARIOS)
             .addSnapshotListener { querySnapshot, error ->
 
                 val listaContatos = mutableListOf<Usuario>()
